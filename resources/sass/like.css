@@ -1,0 +1,13 @@
+.like{
+    display: inline-block;
+}
+
+.like__object{
+    display: inline-block;
+    color: #1b4b72;
+    cursor: pointer;
+}
+
+.like__object:hover, .like-active{
+    color: red;
+}
