@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePost;
 use App\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,17 +35,12 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param StorePost $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePost $request)
     {
-        //dd(request()->all());
-        request()->validate([
-            'header' => 'required',
-            'body' => 'required',
-            'image' => 'required|image'
-        ]);
+        $request->validated();
 
         $post = new Post;
         $post->header = request('header');
