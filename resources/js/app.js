@@ -8,6 +8,8 @@ require('./bootstrap');
 
 require('./like');
 
+require('./loadImage');
+
 window.Vue = require('vue');
 
 /**

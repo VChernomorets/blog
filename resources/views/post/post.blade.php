@@ -14,7 +14,7 @@
                         <div class="card-body">
                             <h3 class="card-title">{{$post->header}}</h3>
                             <p class="card-text">{{$post->body}}</p>
-                            <p class="card-text"><small class="text-muted">{{$post->created_at}}</small></p>
+                            <p class="card-text"><span class="text-muted">{{$post->created_at}} &bull; <a href="{{route('post.edit', $post->id)}}">Edit</a></span></p>
                         </div>
                     </div>
                 </div>

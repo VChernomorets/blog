@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostUpdate;
 use App\Http\Requests\StorePost;
 use App\Post;
 use Illuminate\Http\Request;
@@ -40,12 +41,12 @@ class PostController extends Controller
      */
     public function store(StorePost $request)
     {
-        $request->validated();
+        //$request->validated();
 
         $post = new Post;
         $post->header = request('header');
         $post->body = request('body');
-        $post->img = $request->file('image')->store('uploads/post', 'public');
+        $post->img = $request->file('imgInput')->store('uploads/post', 'public');
         $post->short_body = mb_strimwidth(request('body'), 0, 70, '...');
         $post->user_id = Auth::id();
         $post->save();
@@ -70,9 +71,9 @@ class PostController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $id)
     {
-        //
+        return view('post.edit', ['post' => $id]);
     }
 
     /**
@@ -82,9 +83,18 @@ class PostController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PostUpdate $request, $id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $post->header = request('header');
+        $post->body = request('body');
+        if(isset($request->imgInput)){
+            $post->img = $request->file('imgInput')->store('uploads/post', 'public');
+        }
+        $post->short_body = mb_strimwidth(request('body'), 0, 70, '...');
+        $post->save();
+
+        return redirect(route('post.show', $id));
     }
 
     /**

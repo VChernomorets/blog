@@ -30,6 +30,10 @@
                                         <i class="fas fa-heart"></i>
                                     </div>
                                 </div>
+                                @if(Auth::id() === $post->user->id)
+                                <br>
+                                    <a href="{{route('post.edit', $post->id)}}">Edit</a>
+                                @endif
                             </div>
                         </div>
                     </div>
