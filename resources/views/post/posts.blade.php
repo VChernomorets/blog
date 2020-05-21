@@ -14,7 +14,7 @@
                                 <p class="card-text">{{$post->short_body}}</p>
                             </div>
                             <div class="card-footer text-muted">
-                                {{$post->user->name}}
+                                <a href="{{route('user.posts', $post->user->id)}}">{{$post->user->name}}</a>
                                 &bull;
                                 {{$post->created_at}}
                                 &bull;
@@ -32,7 +32,12 @@
                                 </div>
                                 @if(Auth::id() === $post->user->id)
                                 <br>
-                                    <a href="{{route('post.edit', $post->id)}}">Edit</a>
+                                    <a class="btn btn-primary" href="{{route('post.edit', $post->id)}}">Edit</a>
+                                    <form action="{{route('post.delete', $post->id)}}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger">Delete</button>
+                                    </form>
                                 @endif
                             </div>
                         </div>
