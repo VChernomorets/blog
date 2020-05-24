@@ -48,7 +48,7 @@
             </div>
             <div class="row mt-5">
                 <div class="col-auto">
-                    {{ $posts->links() }}
+                    {{ $posts->appends(['sortBy' => $sortBy, 'sortType' => $sortType])->links() }}
                 </div>
             </div>
         </div>
