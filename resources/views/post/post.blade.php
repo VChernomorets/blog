@@ -14,7 +14,19 @@
                         <div class="card-body">
                             <h3 class="card-title">{{$post->header}}</h3>
                             <p class="card-text">{{$post->body}}</p>
-                            <p class="card-text"><span class="text-muted">{{$post->created_at}} &bull; <a href="{{route('post.edit', $post->id)}}">Edit</a></span></p>
+                            <p class="card-text">
+                                <span class="text-muted">
+                                    {{$post->created_at}}
+                                    @if(Auth::id() === $post->user->id)
+                                        <a class="btn btn-primary" href="{{route('post.edit', $post->id)}}">Edit</a>
+                                        <form action="{{route('post.delete', $post->id)}}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger">Delete</button>
+                                        </form>
+                                    @endif
+                                </span>
+                            </p>
                         </div>
                     </div>
                 </div>

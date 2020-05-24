@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostUpdate;
 use App\Http\Requests\StorePost;
 use App\Post;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -18,9 +20,11 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $posts = Post::paginate(8);
-        //dd($posts);
-        return view('post.posts', ['posts' => $posts]);
+        $sortType = $request->sortType ?? 'created_at';
+        $sortBy = $request->sortBy ?? 'asc';
+
+        $posts = Post::orderBy($sortType, $sortBy)->paginate(8);
+        return view('post.posts', ['posts' => $posts, 'sortBy' => $sortBy, 'sortType' => $sortType]);
     }
 
     /**
@@ -73,6 +77,7 @@ class PostController extends Controller
      */
     public function edit(Post $id)
     {
+        $this->authorize('update', $id);
         return view('post.edit', ['post' => $id]);
     }
 
@@ -86,6 +91,9 @@ class PostController extends Controller
     public function update(PostUpdate $request, $id)
     {
         $post = Post::findOrFail($id);
+        $this->authorize('update', $post);
+
+
         $post->header = request('header');
         $post->body = request('body');
         if(isset($request->imgInput)){
@@ -103,8 +111,10 @@ class PostController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $id)
     {
-        //
+        $this->authorize('delete', $id);
+        $id->delete();
+        return redirect(route('posts'));
     }
 }

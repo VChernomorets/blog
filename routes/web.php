@@ -23,6 +23,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/comment', 'CommentController@store')->name('comment.store');
         Route::post('/like/{id}', 'LikePostController@store')->name('post.like');
         Route::put('{id}', 'PostController@update')->name('post.update');
+        Route::delete('{id}', 'PostController@destroy')->name('post.delete');
     });
     Route::post('/comment/like/{id}', 'LikeCommentController@store')->name('comment.like');
 
