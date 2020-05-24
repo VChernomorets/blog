@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostUpdate;
+use App\Http\Requests\StorePost;
 use App\Post;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -16,9 +20,11 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $posts = Post::paginate(8);
-        //dd($posts);
-        return view('post.posts', ['posts' => $posts]);
+        $sortType = $request->sortType ?? 'created_at';
+        $sortBy = $request->sortBy ?? 'asc';
+
+        $posts = Post::orderBy($sortType, $sortBy)->paginate(8);
+        return view('post.posts', ['posts' => $posts, 'sortBy' => $sortBy, 'sortType' => $sortType]);
     }
 
     /**
@@ -34,22 +40,17 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param StorePost $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePost $request)
     {
-        //dd(request()->all());
-        request()->validate([
-            'header' => 'required',
-            'body' => 'required',
-            'image' => 'required|image'
-        ]);
+        //$request->validated();
 
         $post = new Post;
         $post->header = request('header');
         $post->body = request('body');
-        $post->img = $request->file('image')->store('uploads/post', 'public');
+        $post->img = $request->file('imgInput')->store('uploads/post', 'public');
         $post->short_body = mb_strimwidth(request('body'), 0, 70, '...');
         $post->user_id = Auth::id();
         $post->save();
@@ -74,9 +75,10 @@ class PostController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $id)
     {
-        //
+        $this->authorize('update', $id);
+        return view('post.edit', ['post' => $id]);
     }
 
     /**
@@ -86,9 +88,21 @@ class PostController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PostUpdate $request, $id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $this->authorize('update', $post);
+
+
+        $post->header = request('header');
+        $post->body = request('body');
+        if(isset($request->imgInput)){
+            $post->img = $request->file('imgInput')->store('uploads/post', 'public');
+        }
+        $post->short_body = mb_strimwidth(request('body'), 0, 70, '...');
+        $post->save();
+
+        return redirect(route('post.show', $id));
     }
 
     /**
@@ -97,8 +111,10 @@ class PostController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $id)
     {
-        //
+        $this->authorize('delete', $id);
+        $id->delete();
+        return redirect(route('posts'));
     }
 }

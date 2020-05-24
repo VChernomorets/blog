@@ -12,9 +12,16 @@
                     <p class="text-danger">{{$errors->first('header')}}</p>
                 </div>
                 <div class="form-group">
-                    <label for="exampleFormControlFile1">Image</label>
-                    <input type="file" class="form-control-file" id="image" name="image">
-                    <p class="text-danger">{{$errors->first('body')}}</p>
+                    <div class="input-file-row-1">
+                        <div class="upload-file-container">
+                            <img id="image" src="#" alt="" />
+                            <div class="upload-file-container-text">
+                                <span>Add<br />photo</span>
+                                <input type="file" name="imgInput" class="photo" id="imgInput" />
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-danger">{{$errors->first('imgInput')}}</p>
                 </div>
                 <div class="form-group">
                     <label for="body">Body:</label>

@@ -18,10 +18,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', 'PostController@index')->name('posts');
         Route::get('/create', 'PostController@create')->name('post.create');
         Route::get('/{id}', 'PostController@show')->name('post.show');
+        Route::get('{id}/edit', 'PostController@edit')->name('post.edit');
         Route::post('/', 'PostController@store')->name('post.store');
         Route::post('/comment', 'CommentController@store')->name('comment.store');
         Route::post('/like/{id}', 'LikePostController@store')->name('post.like');
-
+        Route::put('{id}', 'PostController@update')->name('post.update');
+        Route::delete('{id}', 'PostController@destroy')->name('post.delete');
     });
     Route::post('/comment/like/{id}', 'LikeCommentController@store')->name('comment.like');
 
